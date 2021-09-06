@@ -1,0 +1,50 @@
+name: Runs UI Tests on commits to master
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  run_ui_tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Set up gcloud sdk
+        uses: google-github-actions/setup-gcloud@master
+        with:
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+          export_default_credentials: true
+
+      - name: Set up JDK 11
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'zulu'
+          java-version: '11'
+
+      - name: Assemble test apk
+        run: ./gradlew assembleDebugAndroidTest
+
+      - name: Rename test apk
+        run: mv ./libtestingexample/build/outputs/apk/androidTest/debug/libtestingexample-debug-androidTest.apk ./test.apk
+
+      - name: Assemble app apk
+        run: ./gradlew assembleDebugAndroidTest -DtestApplicationId=me.jdvp.librarytestexample
+
+      - name: Rename app apk
+        run: mv ./libtestingexample/build/outputs/apk/androidTest/debug/libtestingexample-debug-androidTest.apk ./app.apk
+
+      - name: Set gcloud project id
+        run: gcloud config set project ${{ env.GCLOUD_PROJECT }}
+
+      - name: Run test lab tests
+        run: |-
+          gcloud firebase test android run \
+            --type instrumentation \
+            --app ./app.apk \
+            --test ./test.apk \
+            --results-history-name='libtestingexample results' \
+            --device model=Pixel2,version=29,locale=en,orientation=portrait
