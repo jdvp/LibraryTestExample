@@ -10,9 +10,7 @@ This project was created as a sample project for my article
 
 If you fork this project to play around with Test Lab with GitHub Actions, you will need to provide
 the following secrets:
-* `GCP_PROJECT` - the name of your project on Firebase Test Lab
 * `GCP_SA_KEY` - the service account key for you Firebase Test Lab project
 
 Going over how to create these is outside the scope of this project or the associated article, but you
-can refer to [this article](https://medium.com/firebase-developers/create-automatic-firestore-backups-with-github-actions-abb12eef86a0)
-that mentions how to create these values.
+can refer to [the gcloud action](https://github.com/google-github-actions/setup-gcloud) to learn more.
