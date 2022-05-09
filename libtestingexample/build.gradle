@@ -4,6 +4,7 @@ plugins {
 }
 
 android {
+    namespace "me.jdvp.librarytestexample"
     defaultConfig {
         minSdk 23
         compileSdk 32
