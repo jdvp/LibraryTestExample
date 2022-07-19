@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name">Library Test Example</string>
     <string name="button_1">Button 1</string>
     <string name="button_1_dialog_title">Hello, Button 1!</string>
     <string name="button_1_dialog_message">Thanks for clicking button 1!</string>
