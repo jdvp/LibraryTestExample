@@ -1,7 +1,4 @@
-import android.app.Activity
 import android.app.Application
-import android.content.Context
-import androidx.fragment.app.Fragment
 import androidx.test.core.app.launchActivity
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.action.ViewActions
@@ -18,7 +15,7 @@ import org.junit.runner.RunWith
 class ExampleTest {
     @Test
     fun test_buttonClick_11() {
-        mockk<Fragment>()
+        mockk<Application>()
         launchActivity<MainActivity>()
         Espresso.onView(ViewMatchers.withId(R.id.button_1)).perform(ViewActions.click())
 
