@@ -29,6 +29,8 @@ android {
         }
     }
 
+    //TODO remove once https://issuetracker.google.com/issues/260059413 is fixed
+    //More context : https://kotlinlang.org/docs/gradle-configure-project.html#gradle-java-toolchains-support
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_11
         targetCompatibility JavaVersion.VERSION_11
