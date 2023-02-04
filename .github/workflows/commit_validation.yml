@@ -3,7 +3,7 @@ name: Runs UI Tests on commits to master
 on:
   push:
     branches:
-      - master
+      - main
 
 jobs:
   run_ui_tests:
