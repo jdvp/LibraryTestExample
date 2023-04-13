@@ -17,18 +17,18 @@ jobs:
 
       - name: Auth for gcloud
         id: 'auth'
-        uses: 'google-github-actions/auth@v0'
+        uses: google-github-actions/auth@v1
         with:
           credentials_json: '${{ secrets.GCP_SA_KEY }}'
 
       - name: Set up gcloud sdk
-        uses: google-github-actions/setup-gcloud@v0
+        uses: google-github-actions/setup-gcloud@v1
 
-      - name: Set up JDK 11
+      - name: Set up JDK
         uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
-          java-version: '11'
+          java-version: '17'
           cache: 'gradle'
 
       - name: Assemble test apk
