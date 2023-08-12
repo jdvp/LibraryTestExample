@@ -12,9 +12,9 @@ java {
 android {
     namespace "me.jdvp.librarytestexample"
     defaultConfig {
-        minSdk 23
-        compileSdk 33
-        targetSdk 33
+        minSdk 26
+        compileSdk 34
+        targetSdk 34
         versionCode 1
         versionName "1.0"
 
@@ -28,14 +28,6 @@ android {
             proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
         }
     }
-
-    //TODO remove once https://issuetracker.google.com/issues/260059413 is fixed
-    //More context : https://kotlinlang.org/docs/gradle-configure-project.html#gradle-java-toolchains-support
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
-    }
-
 
     testOptions {
         animationsDisabled true
