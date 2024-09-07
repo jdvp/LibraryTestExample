@@ -53,4 +53,4 @@ jobs:
             --app ./app.apk \
             --test ./test.apk \
             --results-history-name='libtestingexample results' \
-            --device model=Pixel2,version=29,locale=en,orientation=portrait
+            --device model=MediumPhone.arm,version=29,locale=en,orientation=portrait
