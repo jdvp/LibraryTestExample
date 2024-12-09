@@ -1,6 +1,6 @@
 # Basically only required since dependabot won't have access to our keys for the commit_validation job
 # we run as the primary example for this project.
-name: Commit Validation
+name: Pull Request Validation
 on: [pull_request]
 
 jobs:
@@ -31,7 +31,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        api-level: [23, 29]
+        api-level: [26, 35]
 
     steps:
       - uses: actions/checkout@v4
