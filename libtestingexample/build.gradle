@@ -2,10 +2,8 @@ plugins {
     id "com.android.library"
 }
 
-java {
-    toolchain {
-        languageVersion.set(JavaLanguageVersion.of(17))
-    }
+kotlin {
+    jvmToolchain(21)
 }
 
 android {
