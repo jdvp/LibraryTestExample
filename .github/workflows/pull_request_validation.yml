@@ -2,30 +2,12 @@
 # we run as the primary example for this project.
 name: Pull Request Validation
 on: [pull_request]
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref_name }}
+  cancel-in-progress: true
 
 jobs:
-  #Run Lint and Unit Tests
-  test:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v6
-    - uses: gradle/actions/wrapper-validation@v5
-
-    - name: set up JDK
-      uses: actions/setup-java@v5
-      with:
-        distribution: 'zulu'
-        java-version: '21'
-        cache: 'gradle'
-
-    - name: Lint
-      run: ./gradlew clean lint 
-    
-    - name: Unit Test
-      run: ./gradlew clean test
-
-  # Run instrumented test cases
-  android:
+  verify:
     runs-on: ubuntu-latest
 
     strategy:
@@ -41,17 +23,51 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: '21'
-          cache: 'gradle'
 
-      - name: Enable KVM group perms (needed for reactivecircus/android-emulator-runner below)
+      - uses: gradle/actions/setup-gradle@v5
+
+      - name: Unit Testing and Linting
+        run: ./gradlew lintDebug testDebugUnitTest --parallel --continue --build-cache --configuration-cache-problems=warn
+
+      - name: Enable KVM group perms
         run: |
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
+
+      - name: AVD Cache
+        uses: actions/cache@v5
+        id: avd-cache
+        with:
+          path: |
+            ~/.android/avd/*
+            ~/.android/adb*
+          key: avd-${{ matrix.api-level }}
+
+      - name: Create and Cache AVD
+        if: steps.avd-cache.outputs.cache-hit != 'true'
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: ${{ matrix.api-level }}
+          arch: x86_64
+          force-avd-creation: false
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          disable-animations: false
+          script: echo "Generated AVD snapshot for caching."
 
       - name: Run Instrumented Tests
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: ${{ matrix.api-level }}
           arch: x86_64
-          script: ./gradlew connectedCheck
+          force-avd-creation: false
+          disable-animations: true
+          emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          script: ./gradlew connectedCheck --build-cache --configuration-cache-problems=warn
+
+      - name: Upload Artifacts on Failure
+        uses: actions/upload-artifact@v6
+        if: failure()
+        with:
+          name: build-${{ matrix.api-level }}
+          path: app/build/
