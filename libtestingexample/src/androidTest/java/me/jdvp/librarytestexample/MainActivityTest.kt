@@ -1,37 +1,41 @@
 package me.jdvp.librarytestexample
 
-import androidx.test.core.app.launchActivity
-import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.compose.ui.test.ExperimentalTestApi
+import androidx.compose.ui.test.hasText
+import androidx.compose.ui.test.junit4.v2.createAndroidComposeRule
+import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performClick
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
-
 @RunWith(AndroidJUnit4::class)
 class MainActivityTest {
+
+    @get:Rule
+    val composeTestRule = createAndroidComposeRule<MainActivity>()
+
+    @OptIn(ExperimentalTestApi::class)
     @Test
     fun test_buttonClick_1() {
-        launchActivity<MainActivity>()
-        onView(withId(R.id.button_1)).perform(click())
+        composeTestRule.onNodeWithText("Button 1").performClick()
 
-        verifyTextDisplayed("Hello, Button 1!")
-        verifyTextDisplayed("Thanks for clicking button 1!")
+        // Compose's native wait API
+        composeTestRule.waitUntilAtLeastOneExists(hasText("Hello, Button 1!"), timeoutMillis = 10000)
+        
+        composeTestRule.onNodeWithText("Hello, Button 1!").assertExists()
+        composeTestRule.onNodeWithText("Thanks for clicking button 1!").assertExists()
     }
 
+    @OptIn(ExperimentalTestApi::class)
     @Test
     fun test_buttonClick_2() {
-        launchActivity<MainActivity>()
-        onView(withId(R.id.button_2)).perform(click())
+        composeTestRule.onNodeWithText("Button 2").performClick()
 
-        verifyTextDisplayed("Hello, Button 2!")
-        verifyTextDisplayed("Thanks for clicking button 2!")
-    }
+        composeTestRule.waitUntilAtLeastOneExists(hasText("Hello, Button 2!"), timeoutMillis = 10000)
 
-    private fun verifyTextDisplayed(text: String) {
-        onView(withText(text))
-            .check(matches(isDisplayed()))
+        composeTestRule.onNodeWithText("Hello, Button 2!").assertExists()
+        composeTestRule.onNodeWithText("Thanks for clicking button 2!").assertExists()
     }
 }
