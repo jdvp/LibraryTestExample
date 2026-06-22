@@ -16,7 +16,7 @@ jobs:
         api-level: [35]
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: gradle/actions/wrapper-validation@v6
 
       - uses: actions/setup-java@v5
