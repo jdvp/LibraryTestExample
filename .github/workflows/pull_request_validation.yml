@@ -71,3 +71,4 @@ jobs:
         with:
           name: build-${{ matrix.api-level }}
           path: app/build/
+          retention-days: 1
